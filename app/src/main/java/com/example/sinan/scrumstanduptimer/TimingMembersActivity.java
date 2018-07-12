@@ -25,9 +25,9 @@ import java.util.Timer;
 
 public class TimingMembersActivity extends AppCompatActivity {
 
-    private List<String> teamMembers;
-    private Map<String, Integer> memberTimes;
-    private Map<String, Integer> memberPosition;
+    private List <String> teamMembers;
+    private Map <String, Integer> memberTimes;
+    private Map <String, Integer> memberPosition;
     private String activeMember;
 
     private Date date1;
@@ -37,93 +37,87 @@ public class TimingMembersActivity extends AppCompatActivity {
     private TextView timerLabel;
     private Thread thread;
     private ListView view;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timing_members);
-        Bundle bundle = getIntent().getExtras();
-        final String members = bundle.getString("STRING_I_NEED");
-        teamMembers = Arrays.asList(members.split(";"));
-        memberTimes = new HashMap<String,Integer>();
-        memberPosition = new HashMap<String,Integer>();
-        for (String member: teamMembers
-             ) {
-            memberTimes.put(member,0);
+    protected void onCreate ( Bundle savedInstanceState ) {
+        super.onCreate ( savedInstanceState );
+        setContentView ( R.layout.activity_timing_members );
+        Bundle bundle = getIntent ( ).getExtras ( );
+        final String members = bundle.getString ( "STRING_I_NEED" );
+        teamMembers = Arrays.asList ( members.split ( ";" ) );
+        memberTimes = new HashMap <String, Integer> ( );
+        memberPosition = new HashMap <String, Integer> ( );
+        for ( String member : teamMembers
+                ) {
+            memberTimes.put ( member , 0 );
         }
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                teamMembers);
-        view = findViewById(R.id.members);
-        timerLabel = findViewById(R.id.timerLabel);
-        view.setAdapter(adapter);
+        ArrayAdapter adapter = new ArrayAdapter <String> ( this ,
+                android.R.layout.simple_list_item_1 ,
+                teamMembers );
+        view = findViewById ( R.id.members );
+        timerLabel = findViewById ( R.id.timerLabel );
+        view.setAdapter ( adapter );
 
-        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        view.setOnItemClickListener ( new AdapterView.OnItemClickListener ( ) {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                String stringText= ((TextView)view).getText().toString();
+            public void onItemClick ( AdapterView <?> parent , View view , int position ,
+                                      long id ) {
+                String stringText = ( ( TextView ) view ).getText ( ).toString ( );
 
-                Log.e("AAA",stringText);
+                Log.e ( "AAA" , stringText );
                 activeMember = stringText;
-                if(memberPosition.get(position) == null)
-                {
-                    memberPosition.put(stringText,position);
+                if ( memberPosition.get ( position ) == null ) {
+                    memberPosition.put ( stringText , position );
                 }
-                foo();
+                foo ( );
             }
-        });
+        } );
 
 
-       thread = new Thread() {
+        thread = new Thread ( ) {
 
             @Override
-            public void run() {
+            public void run ( ) {
                 try {
-                    while (!thread.isInterrupted()) {
-                        Thread.sleep(500);
-                        runOnUiThread(new Runnable() {
+                    while ( !thread.isInterrupted ( ) ) {
+                        Thread.sleep ( 500 );
+                        runOnUiThread ( new Runnable ( ) {
                             @Override
-                            public void run() {
-                                foo();
+                            public void run ( ) {
+                                foo ( );
                             }
-                        });
+                        } );
                     }
-                } catch (InterruptedException e) {
+                } catch ( InterruptedException e ) {
                 }
             }
         };
 
-        thread.start();
+        thread.start ( );
 
     }
 
-    private void foo(){
+    private void foo ( ) {
 
-        if(activeMember != null)
-        {
-        if(firstRun)
-        {
-            date1 = new Date(System.currentTimeMillis());
-            firstRun = false;
-        }
-        else
-        {
-            date2 = new Date(System.currentTimeMillis());
-            long mills = date2.getTime() - date1.getTime();
-            if(mills>1000)
-            {
-                int memberSec = memberTimes.get(activeMember) + (int)mills;
-                memberTimes.replace(activeMember,memberSec);
-                date1 = date2;
-                timerLabel.setText(("  >>  "+activeMember+" : "+memberSec/1000 + "  seconds<<  "));
-                int position = memberPosition.get(activeMember);
-                TextView v = (TextView) view.getChildAt(position);
-                v.setText((activeMember+" : "+memberSec/1000 + "  seconds<<  "));
+        if ( activeMember != null ) {
+            if ( firstRun ) {
+                date1 = new Date ( System.currentTimeMillis ( ) );
+                firstRun = false;
+            } else {
+                date2 = new Date ( System.currentTimeMillis ( ) );
+                long mills = date2.getTime ( ) - date1.getTime ( );
+                if ( mills > 1000 ) {
+                    int memberSec = memberTimes.get ( activeMember ) + ( int ) mills;
+                    memberTimes.replace ( activeMember , memberSec );
+                    date1 = date2;
+                    timerLabel.setText ( ( "  >>  " + activeMember + " : " + memberSec / 1000 + "  seconds<<  " ) );
+                    int position = memberPosition.get ( activeMember );
+                    TextView v = ( TextView ) view.getChildAt ( position );
+                    v.setText ( ( activeMember + " : " + memberSec / 1000 + "  seconds<<  " ) );
+                }
             }
         }
-        }
     }
-
 
 
 }
